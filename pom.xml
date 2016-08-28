@@ -21,7 +21,12 @@
   <properties>
     <cxf.version>3.1.7</cxf.version>
     <spring.version>4.3.2.RELEASE</spring.version>
+
+    <!-- Squashes maven "build is platform dependent!" error. Specify file encoding for 
+         files without one defined -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>joda-time</groupId>

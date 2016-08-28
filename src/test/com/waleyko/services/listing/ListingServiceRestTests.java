@@ -14,44 +14,34 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.waleyko.test.CustomTestListener;
+import com.waleyko.test.CustomTestRunner;
 import com.waleyko.test.data.TestData;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(CustomTestRunner.class)
 @ContextConfiguration("classpath:test-configuration.xml")
-public class ListingServiceRestTests {
+public class ListingServiceRestTests implements CustomTestListener {
 
-    private static String ENDPOINT;
-    private static Server theServer;
-    private static boolean serverInitialized = false;
-
-    // Setter injection because Spring doesn't like to inject static variables
     @Value("${rest-endpoint}")
-    public void setEndpoint(String anEndpoint)
+    private String ENDPOINT;
+    private static Server theServer;
+
+    // The CustomTestRunner will call this before every test
+    // Not using @BeforeTest because it gets called before Spring dependency injection
+    public void beforeClassSetup() throws Exception 
     {
-        ENDPOINT = anEndpoint;
+        startServer();
     }
 
-    // Would use @BeforeClass but then the dependency injection wouldn't happen in time.
-    @Before
-    public void init() throws Exception 
-    {
-        if (!serverInitialized) {
-            startServer();
-            serverInitialized = true;
-        }
-    }
-
-    private static void startServer() throws Exception
+    private void startServer() throws Exception
     {
         JAXRSServerFactoryBean serverFactory = new JAXRSServerFactoryBean();
         serverFactory.setResourceClasses(ListingService.class);
@@ -64,9 +54,9 @@ public class ListingServiceRestTests {
     }
 
     @AfterClass
-    public static void destroy() throws Exception {
-       theServer.stop();
-       theServer.destroy();
+    public static void tearDown() throws Exception{
+        theServer.stop();
+        theServer.destroy();
     }
 
     @Test
