@@ -1,5 +1,6 @@
 package com.waleyko.services.report;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,12 +43,12 @@ public class ReportService {
     public static Response getProfitReport(ListingsList aListOfListings)
     {
         theLogger.fine("Getting profit report");
-        double totalProfit = 0;
+        BigDecimal totalProfit = new BigDecimal(0);
         List<Listing> listings = aListOfListings.getListings();
         
         for (Listing listing : listings) {
-            double profit = listing.getSellAmount() - listing.getPurchaseAmount();
-            totalProfit += profit;
+            BigDecimal profit = listing.getSellAmount().subtract(listing.getPurchaseAmount());
+            totalProfit = totalProfit.add(profit);
         }
 
         return Response.ok().entity(totalProfit).build();

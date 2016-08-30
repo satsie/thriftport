@@ -16,11 +16,13 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.waleyko.test.CustomTestListener;
 import com.waleyko.test.CustomTestRunner;
@@ -34,6 +36,9 @@ public class ListingServiceRestTests implements CustomTestListener {
     private String ENDPOINT;
     private static Server theServer;
 
+    @Autowired
+    private ListingService theListingService;
+
     // The CustomTestRunner will call this before every test
     // Not using @BeforeTest because it gets called before Spring dependency injection
     public void beforeClassSetup() throws Exception 
@@ -44,7 +49,8 @@ public class ListingServiceRestTests implements CustomTestListener {
     private void startServer() throws Exception
     {
         JAXRSServerFactoryBean serverFactory = new JAXRSServerFactoryBean();
-        serverFactory.setResourceClasses(ListingService.class);
+        //serverFactory.setResourceClasses(ListingService.class);
+        serverFactory.setServiceBean(theListingService);
         serverFactory.setAddress(ENDPOINT);
         serverFactory.getInInterceptors().add(new LoggingInInterceptor());
         serverFactory.getOutInterceptors().add(new LoggingOutInterceptor());
@@ -94,6 +100,7 @@ public class ListingServiceRestTests implements CustomTestListener {
         WebClient client = WebClient.create(ENDPOINT);
         client.type(MediaType.APPLICATION_JSON);
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JodaModule());
 
         Response r = client.path("/listings").post(mapper.writeValueAsString(TestData.getListing()));
         assertTrue(r.getStatus() == Status.CREATED.getStatusCode());

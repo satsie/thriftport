@@ -1,5 +1,6 @@
 package com.waleyko.test.data;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class TestData {
         Listing ret = new Listing();
         ret.setName("Pink Zipped Stitch Sweater");
         ret.setDescription("NWT pink chunky knit pull over with side zip. Size XS.");
-        ret.setPurchaseAmount(15);
-        ret.setSellAmount(20);
+        ret.setPurchaseAmount(new BigDecimal(15));
+        ret.setSellAmount(new BigDecimal(20));
 
         return ret;
     }
@@ -29,8 +30,8 @@ public class TestData {
         Listing listing2 = new Listing();
         listing2.setName("Polka Dot Dress");
         listing2.setDescription("Vintage inspired strapless polka dot dress. Size XS");
-        listing2.setPurchaseAmount(20);
-        listing2.setSellAmount(35);
+        listing2.setPurchaseAmount(new BigDecimal(20));
+        listing2.setSellAmount(new BigDecimal(35));
 
         List<Listing> listings = new ArrayList<Listing>();
         listings.add(listing1);

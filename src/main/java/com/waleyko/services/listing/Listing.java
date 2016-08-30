@@ -1,24 +1,38 @@
 package com.waleyko.services.listing;
 
+import java.math.BigDecimal;
+
 import org.joda.time.DateTime;
 
 public class Listing {
 
-    private String theUuid;
+    private String theId;
+    private String theUserId;
     private String theName;
     private String theDescription;
-    private double thePurchaseAmount;
-    private double theSellAmount;
+    private BigDecimal thePurchaseAmount;
+    private BigDecimal theSellAmount;
+    private DateTime theListDate;
     private DateTime theSellDate;
 
-    public String getUuid()
+    public String getId()
     {
-        return theUuid;
+        return theId;
     }
 
-    public void setUuid(String aUuid)
+    public void setId(String anId)
     {
-        theUuid = aUuid;
+        theId = anId;
+    }
+
+    public String getUserId()
+    {
+        return theUserId;
+    }
+
+    public void setUserId(String aUserId)
+    {
+        theUserId = aUserId;
     }
 
     public String getName()
@@ -41,24 +55,34 @@ public class Listing {
         theDescription = aDescription;
     }
 
-    public double getPurchaseAmount()
+    public BigDecimal getPurchaseAmount()
     {
         return thePurchaseAmount;
     }
 
-    public void setPurchaseAmount(double aPurchaseAmount)
+    public void setPurchaseAmount(BigDecimal aPurchaseAmount)
     {
         thePurchaseAmount = aPurchaseAmount;
     }
 
-    public double getSellAmount()
+    public BigDecimal getSellAmount()
     {
         return theSellAmount;
     }
 
-    public void setSellAmount(double aSellAmount)
+    public void setSellAmount(BigDecimal aSellAmount)
     {
         theSellAmount = aSellAmount;
+    }
+
+    public DateTime getListDate()
+    {
+        return new DateTime(theListDate);
+    }
+
+    public void setListDate(DateTime aListDate)
+    {
+        theListDate = new DateTime(aListDate);
     }
 
     public DateTime getSellDate()

@@ -20,6 +20,12 @@ public class ListingService {
     public static final String VERSION = "1.0";
 
     private static final Logger theLogger = Logger.getLogger(ListingService.class.getName());
+    private final ListingServiceComponent theComponent;
+
+    public ListingService(ListingServiceComponent aComponent)
+    {
+        theComponent = aComponent;
+    }
 
     @GET
     @Path("/version")
@@ -37,22 +43,27 @@ public class ListingService {
 
     @GET
     @Path("/{uuid}")
-    public static Response getListing(@PathParam("uuid") String aUuid)
+    public Response getListing(@PathParam("uuid") String anId)
     {
-        theLogger.fine("Getting listing for UUID:" + aUuid);
-        
-        return Response.ok().entity(aUuid).build();
+        theLogger.fine("Getting listing for UUID:" + anId);
+        Listing ret = theComponent.getListingById(anId);
+        return Response.ok().entity(ret).build();
     }
 
     @POST
     @Path("/")
-    public static Response createListing(Listing aListing)
+    public Response createListing(Listing aListing)
     {
         String uuid = UUID.randomUUID().toString();
-        aListing.setUuid(uuid);
+        aListing.setId(uuid);
 
-        // save the listing
+        boolean success = theComponent.createListing(aListing);
 
-        return Response.status(Status.CREATED).entity(aListing).build();
+        if (success) {
+            return Response.status(Status.CREATED).entity(uuid).build();
+        }
+        else {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
