@@ -2,12 +2,14 @@ package com.waleyko.services.listing;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
@@ -88,10 +90,12 @@ public class ListingServiceRestTests implements CustomTestListener {
     public void testGetListing()
     {
         WebClient client = WebClient.create(ENDPOINT);
+        client.accept(MediaType.APPLICATION_JSON);
         String uuid = UUID.randomUUID().toString();
 
         Response r = client.path("/listings/" + uuid).get();
         assertTrue(r.getStatus() == Status.OK.getStatusCode());
+        // TODO json assertions
     }
 
     @Test
@@ -104,5 +108,31 @@ public class ListingServiceRestTests implements CustomTestListener {
 
         Response r = client.path("/listings").post(mapper.writeValueAsString(TestData.getListing()));
         assertTrue(r.getStatus() == Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    public void testCreateAndDeleteListing() throws IOException
+    {
+        WebClient client = WebClient.create(ENDPOINT);
+        client.type(MediaType.APPLICATION_JSON);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JodaModule());
+
+        // Create a new listing
+        Response r = client.path("/listings").post(mapper.writeValueAsString(TestData.getListing()));
+        assertTrue(r.getStatus() == Status.CREATED.getStatusCode());
+        
+        String id = r.readEntity(String.class);
+        //Listing newListing = mapper.readValue(createdJson, Listing.class);
+
+        // Delete the listing
+        Response r2 = client.path("/" + id).delete();
+        assertTrue(r2.getStatus() == Status.OK.getStatusCode());
+
+        // Verify that the listing is deleted
+        Response r3 = client.get();
+        String r3String = r3.readEntity(String.class);
+        assertTrue(r3.getStatus() == Status.OK.getStatusCode());
+        assertTrue(StringUtils.isEmpty(r3String));
     }
 }

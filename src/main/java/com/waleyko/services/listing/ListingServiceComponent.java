@@ -14,6 +14,11 @@ public class ListingServiceComponent {
         return theDAO.insert(aListing);
     }
 
+    public boolean deleteListing(String anId)
+    {
+        return theDAO.delete(anId);
+    }
+
     public Listing getListingById(String anId)
     {
         return theDAO.getListingById(anId);

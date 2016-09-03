@@ -17,6 +17,7 @@ public class JDBCListingDAO implements ListingDAO{
     private static final String INSERT_LISTING="INSERT INTO listings "
             + "(id, userId, name, description, purchaseAmount, sellAmount, listDate, sellDate) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_LISTING = "DELETE FROM listings where id = ?";
     private static final String GET_LISTING_BY_ID="SELECT * FROM listings "
             + "WHERE id = ?";
 
@@ -59,6 +60,35 @@ public class JDBCListingDAO implements ListingDAO{
                 }
             }
         }
+    }
+
+    public boolean delete(String anId)
+    {
+        Connection connection = null;
+        boolean ret = false;
+        
+        try {
+            connection = theDatasource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(DELETE_LISTING);
+            ps.setString(1, anId);
+
+            int result = ps.executeUpdate();
+            if (result == 1) { ret=true; };
+            ps.close();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                }
+                catch (SQLException e) {
+                }
+            }
+        }
+        return ret;
     }
 
     public Listing getListingById(String anId)

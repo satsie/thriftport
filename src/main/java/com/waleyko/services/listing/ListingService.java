@@ -1,16 +1,22 @@
 package com.waleyko.services.listing;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/listings")
 @Produces("application/json")
@@ -42,12 +48,24 @@ public class ListingService {
     }
 
     @GET
-    @Path("/{uuid}")
-    public Response getListing(@PathParam("uuid") String anId)
+    @Path("/{id}")
+    public Response getListing(@PathParam("id") String anId)
     {
-        theLogger.fine("Getting listing for UUID:" + anId);
-        Listing ret = theComponent.getListingById(anId);
-        return Response.ok().entity(ret).build();
+        try {
+            theLogger.fine("Getting listing for UUID:" + anId);
+            String ret = "";
+            Listing listing = theComponent.getListingById(anId);
+
+            if (listing != null) {
+                ObjectMapper jsonMapper = new ObjectMapper();
+                ret = jsonMapper.writeValueAsString(listing);
+            }
+            return Response.ok(ret, MediaType.APPLICATION_JSON).build();
+        }
+        catch (JsonProcessingException e) {
+            theLogger.warning("Error mapping listing " + anId + " to JSON");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @POST
@@ -63,6 +81,21 @@ public class ListingService {
             return Response.status(Status.CREATED).entity(uuid).build();
         }
         else {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteListing(@PathParam("id") String anId)
+    {
+        boolean success = theComponent.deleteListing(anId);
+
+        if (success) {
+            return Response.status(Status.OK).build(); 
+        }
+        else {
+            theLogger.log(Level.WARNING, "Error deleting listing " + anId);
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
