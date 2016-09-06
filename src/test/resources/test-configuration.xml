@@ -9,10 +9,15 @@
 
   <import resource="classpath:test-properties-configuration.xml" />
   <import resource="classpath:datasource-configuration.xml" />
+  <import resource="classpath:hibernate.cfg.xml" />
 
-  <bean id="listing-dao" class="com.waleyko.services.listing.JDBCListingDAO">
-    <constructor-arg ref="datasource-bean"/>
+  <bean id="listing-dao" class="com.waleyko.services.listing.HibernateListingDAO" >
+    <constructor-arg ref="session-factory-bean" />
   </bean>
+
+<!--   <bean id="listing-dao" class="com.waleyko.services.listing.JDBCListingDAO"> -->
+<!--     <constructor-arg ref="datasource-bean"/> -->
+<!--   </bean> -->
 
   <bean id="listing-service-component-bean" class="com.waleyko.services.listing.ListingServiceComponent">
     <constructor-arg ref="listing-dao"/>

@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+    <hibernate-mapping>
+      <class name="com.waleyko.services.listing.Listing" table="listings">
+        <id name="id">
+          <generator class="assigned" />
+        </id>
+
+        <property name="userId" type="string" />
+        <property name="name" type="string" />
+        <property name="description" type="string" />
+        <property name="purchaseAmount" type="big_decimal" />
+        <property name="sellAmount" type="big_decimal" />
+        <property name="listDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" />
+        <property name="sellDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" />
+      </class>
+
+    </hibernate-mapping>
