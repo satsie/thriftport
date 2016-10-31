@@ -16,6 +16,7 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,7 @@ public class ListingServiceRestTests implements CustomTestListener {
         // TODO json assertions
     }
 
-    @Test
+    @Ignore
     public void testCreateListing() throws JsonProcessingException
     {
         WebClient client = WebClient.create(ENDPOINT);
@@ -110,7 +111,7 @@ public class ListingServiceRestTests implements CustomTestListener {
         assertTrue(r.getStatus() == Status.CREATED.getStatusCode());
     }
 
-    @Test
+    @Ignore
     public void testCreateAndDeleteListing() throws IOException
     {
         WebClient client = WebClient.create(ENDPOINT);

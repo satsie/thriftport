@@ -4,22 +4,11 @@
   <artifactId>thriftport</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  
+
   <properties>
     <cxf.version>3.1.7</cxf.version>
+    <maven.jacoco.plugin>0.7.7.201606060606</maven.jacoco.plugin>
+    <maven.surefire.plugin>2.19.1</maven.surefire.plugin>
     <spring.version>4.3.2.RELEASE</spring.version>
 
     <!-- Squashes maven "build is platform dependent!" error. Specify file encoding for 
@@ -92,7 +81,6 @@
       <artifactId>spring-orm</artifactId>
       <version>${spring.version}</version>
     </dependency>
-    
 
 
     <dependency>
@@ -135,9 +123,56 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
     </dependency>
-    
-    
-
   </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${maven.jacoco.plugin}</version>
+        <executions>
+          <execution>
+          <id>default-prepare-agent</id>
+          <goals>
+            <goal>prepare-agent</goal>
+          </goals>
+        </execution>
+        <execution>
+          <id>default-report</id>
+          <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <propertyName>jacocoArgs</propertyName>
+          <append>true</append>
+         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.surefire.plugin}</version>
+        <configuration>
+          <argLine>-server -ea -XX:MaxPermSize=512m -Xmx4g -XX:-UseSplitVerifier ${jacocoArgs}</argLine>
+          <includes>
+            <include>**/*Tests.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
