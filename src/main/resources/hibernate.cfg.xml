@@ -18,7 +18,7 @@
 
      <property name="mappingResources">
        <list>
-           <value>/mappings/Listing.hbm.xml</value>
+           <value>/mappings/listing.hbm.xml</value>
        </list>
      </property>
 
