@@ -172,6 +172,7 @@
           </includes>
           <additionalClasspathElements>
             <additionalClasspathElement>src/test/resources</additionalClasspathElement>
+            <additionalClasspathElement>src/main/resources</additionalClasspathElement>
           </additionalClasspathElements>
         </configuration>
       </plugin>
